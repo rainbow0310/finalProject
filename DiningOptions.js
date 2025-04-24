@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
+import { Button, FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 export default function DiningOptions ({ route, navigation }) {
 
@@ -83,7 +83,7 @@ export default function DiningOptions ({ route, navigation }) {
               data={listData}
               renderItem={({ item }) => (
               <TouchableOpacity
-              onPress={() => navigation.navigate('Details', item)}
+              onPress={() => navigation.navigate('Menu', item)}
               style={styles.border}
             >
       <Text style={styles.itemName}>{item.word}</Text>

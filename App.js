@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Import your screens
-import Dining from './DiningOptions';
+import DiningOptions from './DiningOptions';
 import Menu from './Menu';
 
 const Stack = createNativeStackNavigator();
@@ -40,9 +40,9 @@ export default function App() {
   if (user) {
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="WordList">
-          <Stack.Screen name="WordList" component={WordList} options={{ title: 'Dining Halls' }} />
-          <Stack.Screen name="Details" component={Details} options={{ title: 'Menu & Ratings' }} />
+        <Stack.Navigator initialRouteName="DiningOptions">
+          <Stack.Screen name="DiningOptions" component={DiningOptions} options={{ title: 'Dining Options' }} />
+          <Stack.Screen name="Menu" component={Menu} options={{ title: 'Menu & Ratings' }} />
         </Stack.Navigator>
       </NavigationContainer>
     );
