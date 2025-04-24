@@ -2,7 +2,16 @@ import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import { auth } from './firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+// Import your screens
+import Dining from './DiningOptions';
+import Menu from './Menu';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [email, setEmail] = useState('');
@@ -27,38 +36,43 @@ export default function App() {
     }
   };
 
+  // If user is logged in, show navigation
+  if (user) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="WordList">
+          <Stack.Screen name="WordList" component={WordList} options={{ title: 'Dining Halls' }} />
+          <Stack.Screen name="Details" component={Details} options={{ title: 'Menu & Ratings' }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
+
+  // If not logged in, show login screen
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      
-      {/* Welcome Message */}
-      <Text style={styles.welcomeText}>Hi! Welcome to FeedMe😋</Text>
-      
-      {user ? (
-        <Text>Welcome, {user.email}!</Text>
-      ) : (
-        <>
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.input}
-          />
-          <View style={styles.buttonContainer}>
-            <Button title="Sign Up" onPress={handleSignUp} />
-            <Button title="Login" onPress={handleLogin} />
-          </View>
-        </>
-      )}
+      <Text style={styles.welcomeText}>Hi! Welcome to FeedMe 😋</Text>
+
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+      <TextInput
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        style={styles.input}
+      />
+      <View style={styles.buttonContainer}>
+        <Button title="Sign Up" onPress={handleSignUp} />
+        <Button title="Login" onPress={handleLogin} />
+      </View>
     </View>
   );
 }
