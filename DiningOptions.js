@@ -4,65 +4,75 @@ import { Button, FlatList, StyleSheet, Text, View, TouchableOpacity } from 'reac
 export default function DiningOptions ({ route, navigation }) {
 
   console.log(route.params);
-    //dataSource contains the data we want rendered as a list
-    //the dataSource should contain a unique key for each item in the array
+
     const dataSource = [
       {
-        word: 'Dougherty Dining Hall',
+        word: 'The Southwest Station',
         menu: [
-          { name: "Buffalo Chicken Wrap", rating: 0 },
-          { name: "Mac & Cheese", rating: 0 },
+          { name: "Build a Burrito", rating: 0 },
+          { name: "Vegan Special Burrito", rating: 0 },
+          { name: "Build a Burrito Bowl", rating: 0 },
+          { name: "Vegan Special Burrito Bowl", rating: 0 },
+          { name: "Nova Chopped Salad", rating: 0 },
+          { name: "Toasted Chips", rating: 0 },
+          { name: "Toasted Chips & Queso", rating: 0 },
+          { name: "Toasted Chips & Guac", rating: 0 },
+          { name: "Chip Trio", rating: 0 },
+          { name: "Nachos", rating: 0 },
+          { name: "Nachos Deluxe", rating: 0 },
         ],
         rating: 0
       },
       {
-        word: 'Donahue Dining Hall',
+        word: 'The Italian Kitchen',
         menu: [
-          { name: "Pasta Bar", rating: 0 },
-          { name: "Grilled Cheese", rating: 0 },
+          { name: "Cheese Pizza", rating: 0 },
+          { name: "Pepperoni Pizza", rating: 0 },
+          { name: "Margherita Pizza", rating: 0 },
+          { name: "Barbeque Chicken Pizza", rating: 0 },
+          { name: "Chicken Parm Sandwich", rating: 0 },
         ],
         rating: 0
       },
       {
-        word: 'Holy Grounds',
+        word: 'The Corner Grille',
         menu: [
-          { name: "Cold Brew", rating: 0 },
+          { name: "", rating: 0 },
           { name: "Blueberry Muffin", rating: 0 },
         ],
         rating: 0
       },
       {
-        word: 'Belle Air Terrace',
+        word: 'Cova Greens',
         menu: [
-          { name: "Philly Cheesesteak", rating: 0 },
-          { name: "Mozzarella Sticks", rating: 0 },
+          { name: "Cova Caesar Salad", rating: 0 },
+          { name: "Cova Greek Salad", rating: 0 },
+          { name: "Sweet Potato Cobb Salad", rating: 0 },
+          { name: "The Italian Kitchen Salad", rating: 0 },
+          { name: "The Italian Kitchen Salad Wrap", rating: 0 },
+          { name: "Sweet Potato Cobb Salad Wrap", rating: 0 },
+          { name: "Cova Greek Salad Wrap", rating: 0 },
+          { name: "Cova Caesar Salad Wrap", rating: 0 },
+          { name: "Build Your Own Cova Salad", rating: 0 },
+          { name: "Build Your Own Cova Wrap", rating: 0 },
         ],
         rating: 0
       },
       {
-        word: 'Cafe Nova',
+        word: 'Sushi',
         menu: [
-          { name: "Smoothie Bowl", rating: 0 },
-          { name: "Avocado Toast", rating: 0 },
+          { name: "Vegetable Roll", rating: 0 },
+          { name: "California Roll", rating: 0 },
+          { name: "Spicy Tuna Roll", rating: 0 },
+          { name: "Seaside Roll Salmon", rating: 0 },
+          { name: "Shrimp Tempura Roll", rating: 0 },
+          { name: "Tuna Poke Bowl", rating: 0 },
+          { name: "Salmon Poke Bowl", rating: 0 },
+          { name: "Vegetarian Poke Bowl", rating: 0 },
         ],
         rating: 0
       },
-      {
-        word: "St. Mary's Dining Hall",
-        menu: [
-          { name: "Meatball Sub", rating: 0 },
-          { name: "Roasted Vegetables", rating: 0 },
-        ],
-        rating: 0
-      },
-      {
-        word: 'Smoothitas',
-        menu: [
-          { name: "Berry Blast", rating: 0 },
-          { name: "Green Machine", rating: 0 },
-        ],
-        rating: 0
-      },
+  
     ];   
     const[listData, setListData] = useState(dataSource);
     //setListData(listData.concat(route.params));

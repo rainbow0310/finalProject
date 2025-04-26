@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { useState } from 'react';
 
 export default function Details({ navigation, route }) {
@@ -10,6 +10,12 @@ export default function Details({ navigation, route }) {
   const rateItem = (index, rating) => {
     const updatedMenu = [...menuItems];
     updatedMenu[index].rating = rating;
+    setMenuItems(updatedMenu);
+  };
+
+  const handleFeedbackChange = (index, text) => {
+    const updatedMenu = [...menuItems];
+    updatedMenu[index].feedback = text;
     setMenuItems(updatedMenu);
   };
 
@@ -34,6 +40,12 @@ export default function Details({ navigation, route }) {
                 </TouchableOpacity>
               ))}
             </View>
+            <TextInput
+              placeholder="Leave feedback..."
+              value={item.feedback}
+              onChangeText={(text) => handleFeedbackChange(index, text)}
+              style={styles.input}
+            />
           </View>
         )}
       />
@@ -72,5 +84,12 @@ const styles = StyleSheet.create({
   },
   selected: {
     backgroundColor: '#ffd700',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    padding: 8,
+    marginTop: 8,
   },
 });
