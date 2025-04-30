@@ -6,10 +6,11 @@ import { auth } from './firebase';
 const firestore = getFirestore();
 
 export default function Details({ navigation, route }) {
-  const { word, menu } = route.params;
+  const { word, menu, feedback } = route.params;
 
   // Create local state for menu items with rating
   const [menuItems, setMenuItems] = useState(menu);
+  const [feedbackText, setFeedbackText] = useState(feedback || '');
   const [hasChanges, setHasChanges] = useState(false);
 
   const rateItem = (index, rating) => {
@@ -31,29 +32,35 @@ export default function Details({ navigation, route }) {
     const restaurantRef = doc(firestore, "userRatings", userId, "restaurants", word);
   
     const newRatings = menuItems.map(item => item.rating).filter(r => r > 0);
+    const newFeedbacks = menuItems
+      .map(item => item.feedback)
+      .filter(f => f && f.trim().length > 0);
   
     try {
       const existingDoc = await getDoc(restaurantRef);
   
       let combinedRatings = newRatings;
+      let combinedFeedbacks = newFeedbacks;
   
       if (existingDoc.exists()) {
-        const existingData = existingDoc.data();
-        combinedRatings = [...(existingData.ratings || []), ...newRatings]; // ✅ append
+        const data = existingDoc.data();
+        combinedRatings = [...(data.ratings || []), ...newRatings];
+        combinedFeedbacks = [...(data.feedback || []), ...newFeedbacks];
       }
   
       await setDoc(restaurantRef, {
         restaurantName: word,
-        ratings: combinedRatings
+        ratings: combinedRatings,
+        feedback: combinedFeedbacks
       });
   
-      alert('Ratings saved!');
+      alert('Ratings and feedback saved!');
       setHasChanges(false);
       navigation.goBack?.() || navigation.navigate('DiningOptions');
     } catch (err) {
       alert('Error saving ratings: ' + err.message);
     }
-  };
+  };  
 
   return (
     <View style={styles.container}>

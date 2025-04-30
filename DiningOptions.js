@@ -102,7 +102,11 @@ export default function DiningOptions ({ route, navigation }) {
             if (docSnap.exists()) {
               const data = docSnap.data();
               const avg = calculateAverage(data.ratings);
-              return { ...item, rating: avg };
+              return {
+                ...item,
+                rating: avg,
+                feedback: (data.feedback || []).at(-1)?.text || ''
+              };
             }
             return item;
           }));
@@ -130,7 +134,10 @@ export default function DiningOptions ({ route, navigation }) {
               data={listData}
               renderItem={({ item }) => (
               <TouchableOpacity
-              onPress={() => navigation.navigate('Menu', item)}
+              onPress={() => navigation.navigate('Menu', {
+                word: item.word,
+                menu: item.menu,
+                feedback: item.feedback})}
               style={styles.border}
             >
       <View style={styles.rowBetween}>
@@ -139,6 +146,9 @@ export default function DiningOptions ({ route, navigation }) {
           <Text style={styles.itemRating}>{item.rating}⭐</Text>
         ) : null}
       </View>
+      {/* {item.feedback ? (
+        <Text style={styles.feedbackText}>{item.feedback}</Text>
+      ) : null} */}
     </TouchableOpacity>
   )}
 />
@@ -176,6 +186,13 @@ const styles = StyleSheet.create({
     itemRating: {
       fontSize: 16,
       color: '#666',
+    },
+    feedbackText: {
+      fontSize: 14,
+      color: '#444',
+      paddingHorizontal: 10,
+      paddingBottom: 10,
+      fontStyle: 'italic',
     },
 });
   
