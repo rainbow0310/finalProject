@@ -1,5 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Button, FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { auth } from './firebase';
+import { useFocusEffect } from '@react-navigation/native';
+
+const firestore = getFirestore();
+
+  //average rating
+const calculateAverage = (ratings) => {
+  if (!ratings.length) return 0;
+  const sum = ratings.reduce((a, b) => a + b, 0);
+  return (sum / ratings.length).toFixed(1);
+};
 
 export default function DiningOptions ({ route, navigation }) {
 
@@ -77,6 +89,31 @@ export default function DiningOptions ({ route, navigation }) {
     const[listData, setListData] = useState(dataSource);
     //setListData(listData.concat(route.params));
 
+    useFocusEffect(
+      React.useCallback(() => {
+        const fetchRatings = async () => {
+          const userId = auth.currentUser?.uid;
+          if (!userId) return;
+  
+          const updatedList = await Promise.all(listData.map(async (item) => {
+            const restaurantRef = doc(firestore, "userRatings", userId, "restaurants", item.word);
+            const docSnap = await getDoc(restaurantRef);
+  
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              const avg = calculateAverage(data.ratings);
+              return { ...item, rating: avg };
+            }
+            return item;
+          }));
+  
+          setListData(updatedList);
+        };
+  
+        fetchRatings();
+      }, [])
+    );
+
     useEffect(()=> {
       if (route.params) {
         if(route.params.word!='') {
@@ -96,7 +133,12 @@ export default function DiningOptions ({ route, navigation }) {
               onPress={() => navigation.navigate('Menu', item)}
               style={styles.border}
             >
-      <Text style={styles.itemName}>{item.word}</Text>
+      <View style={styles.rowBetween}>
+        <Text style={styles.itemName}>{item.word}</Text>
+        {item.rating ? (
+          <Text style={styles.itemRating}>{item.rating}⭐</Text>
+        ) : null}
+      </View>
     </TouchableOpacity>
   )}
 />
@@ -123,6 +165,17 @@ const styles = StyleSheet.create({
       border: {
       borderWidth: 1,
       borderColor: "gray",
+    },
+    rowBetween: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 10,
+    },
+    
+    itemRating: {
+      fontSize: 16,
+      color: '#666',
     },
 });
   
