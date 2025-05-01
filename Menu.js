@@ -1,23 +1,66 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { useState } from 'react';
+import { getFirestore, doc, setDoc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
+import { auth } from './firebase'; 
+
+const firestore = getFirestore();
 
 export default function Details({ navigation, route }) {
-  const { word, menu } = route.params;
+  const { word, menu, feedback } = route.params;
 
   // Create local state for menu items with rating
   const [menuItems, setMenuItems] = useState(menu);
+  const [feedbackText, setFeedbackText] = useState(feedback || '');
+  const [hasChanges, setHasChanges] = useState(false);
 
   const rateItem = (index, rating) => {
     const updatedMenu = [...menuItems];
     updatedMenu[index].rating = rating;
     setMenuItems(updatedMenu);
+    setHasChanges(true);
   };
 
   const handleFeedbackChange = (index, text) => {
     const updatedMenu = [...menuItems];
     updatedMenu[index].feedback = text;
     setMenuItems(updatedMenu);
+    setHasChanges(true);
   };
+
+  const saveToFirebase = async () => {
+    const userId = auth.currentUser.uid;
+    const restaurantRef = doc(firestore, "userRatings", userId, "restaurants", word);
+  
+    const newRatings = menuItems.map(item => item.rating).filter(r => r > 0);
+    const newFeedbacks = menuItems
+      .map(item => item.feedback)
+      .filter(f => f && f.trim().length > 0);
+  
+    try {
+      const existingDoc = await getDoc(restaurantRef);
+  
+      let combinedRatings = newRatings;
+      let combinedFeedbacks = newFeedbacks;
+  
+      if (existingDoc.exists()) {
+        const data = existingDoc.data();
+        combinedRatings = [...(data.ratings || []), ...newRatings];
+        combinedFeedbacks = [...(data.feedback || []), ...newFeedbacks];
+      }
+  
+      await setDoc(restaurantRef, {
+        restaurantName: word,
+        ratings: combinedRatings,
+        feedback: combinedFeedbacks
+      });
+  
+      alert('Ratings and feedback saved!');
+      setHasChanges(false);
+      navigation.goBack?.() || navigation.navigate('DiningOptions');
+    } catch (err) {
+      alert('Error saving ratings: ' + err.message);
+    }
+  };  
 
   return (
     <View style={styles.container}>
@@ -49,6 +92,11 @@ export default function Details({ navigation, route }) {
           </View>
         )}
       />
+      {hasChanges && (
+        <TouchableOpacity onPress={saveToFirebase} style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>Save Ratings</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -91,5 +139,17 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 8,
     marginTop: 8,
+  },
+  saveButton: {
+    marginTop: 20,
+    padding: 12,
+    backgroundColor: '#4CAF50',
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
