@@ -37,8 +37,13 @@ export default function DiningOptions ({ route, navigation }) {
       {
         word: 'The Corner Grille',
         menu: [
-          { name: "", rating: 0 },
-          { name: "Blueberry Muffin", rating: 0 },
+          { name: "Burger", rating: 0 },
+          { name: "Grilled Chicken Sandwich", rating: 0 },
+          { name: "Black Bean Burger", rating: 0 },
+          { name: "Cheesesteak", rating: 0 },
+          { name: "Chicken Cheesesteak", rating: 0 },
+          { name: "French Fries", rating: 0 },
+          { name: "Buffalo Cauliflower Bites", rating: 0 },
         ],
         rating: 0
       },
